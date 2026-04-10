@@ -9,6 +9,8 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Force redeploy timestamp: 2026-04-11-0439
+
 // Initialize database
 const db = new Database('leads.db');
 
