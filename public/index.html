@@ -301,6 +301,76 @@
         </div>
     </div>
 
+    <!-- Email Modal -->
+    <div class="modal-overlay" id="emailModal">
+        <div class="modal" style="max-width: 600px;">
+            <div class="modal-header">
+                <h2 id="emailModalTitle">Compose Email</h2>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="emailLeadId">
+                
+                <div class="form-group">
+                    <label>Template</label>
+                    <select id="emailTemplate" onchange="applyEmailTemplate()">
+                        <option value="">-- Select Template --</option>
+                        <option value="intro">Cold Intro (Recommended)</option>
+                        <option value="followup">Follow-up</option>
+                        <option value="short">Short & Sweet</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Subject</label>
+                    <input type="text" id="emailSubject">
+                </div>
+
+                <div class="form-group">
+                    <label>Email Body</label>
+                    <textarea id="emailBody" rows="12"></textarea>
+                </div>
+
+                <div style="background: #1a1a1f; padding: 12px; border-radius: 6px; margin-bottom: 15px;">
+                    <label style="font-size: 0.85rem; color: #888; margin-bottom: 8px; display: block;">Placeholders (auto-replaced):</label>
+                    <div>
+                        <span class="placeholder-tag" onclick="insertPlaceholder('{{business_name}}')">{{business_name}}</span>
+                        <span class="placeholder-tag" onclick="insertPlaceholder('{{contact_name}}')">{{contact_name}}</span>
+                        <span class="placeholder-tag" onclick="insertPlaceholder('{{industry}}')">{{industry}}</span>
+                        <span class="placeholder-tag" onclick="insertPlaceholder('{{phone}}')">{{phone}}</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Preview (with placeholders replaced):</label>
+                    <div id="emailPreview" style="background: #0f0f12; padding: 15px; border-radius: 6px; white-space: pre-wrap; color: #888; max-height: 200px; overflow-y: auto;"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeEmailModal()">Cancel</button>
+                <button class="btn" onclick="copyEmail()">Copy to Clipboard</button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .placeholder-tag {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            margin: 2px;
+        }
+        .placeholder-tag:hover {
+            background: #3b82f6;
+        }
+        .btn-email {
+            background: #2563eb;
+        }
+    </style>
+
     <script>
         let allLeads = [];
 
@@ -344,6 +414,7 @@
                         '<td class="priority-' + l.priority + '" style="text-transform: capitalize;">' + l.priority + '</td>' +
                         '<td class="actions-cell">' +
                             '<button onclick="editLead(' + l.id + ')">Edit</button>' +
+                            '<button onclick="openEmailModal(' + l.id + ')">Email</button>' +
                             '<button onclick="deleteLead(' + l.id + ')">Delete</button>' +
                         '</td>' +
                     '</tr>';
@@ -459,6 +530,163 @@
         document.getElementById('modal').addEventListener('click', function(e) {
             if (e.target === this) closeModal();
         });
+        document.getElementById('emailModal').addEventListener('click', function(e) {
+            if (e.target === this) closeEmailModal();
+        });
+
+        // ==================== EMAIL DRAFT FEATURE ====================
+
+        let currentEmailLead = null;
+
+        const emailTemplates = {
+            intro: {
+                subject: "Quick question about {{business_name}} - from a fellow local business owner",
+                body: `Hi {{contact_name}},
+
+I came across {{business_name}} while researching {{industry}} businesses in the area. My name is Gabe and I run My Office Assistant - we help local service businesses handle their phones so they never miss a customer.
+
+I know you're probably busy running {{business_name}}, so I'll keep this short. We set up AI receptionists that answer calls, book appointments, and send texts - basically handling the phone stuff that eats up your day.
+
+Is that something you've thought about, or are you pretty set with how you're handling calls right now?
+
+Either way, no pressure. Just wanted to introduce myself since we're both local.
+
+Best,
+Gabe
+My Office Assistant
+(Your local AI receptionist service)
+
+P.S. If you ever want to chat about it over coffee, I'm around. Just reply to this email or text me at the number below.`
+            },
+            followup: {
+                subject: "Following up - {{business_name}}",
+                body: `Hey {{contact_name}},
+
+Just wanted to follow up on my email from last week. No rush at all - I know you're busy.
+
+To recap: I'm Gabe from My Office Assistant. We help local {{industry}} businesses like {{business_name}} handle their phone calls automatically, so you can focus on the actual work instead of constantly answering the phone.
+
+Quick question: What's your biggest frustration with how you're currently handling calls? Just curious if it's even a pain point for you.
+
+If it's not something you're looking for right now, totally get it. But if you're open to a 10-minute conversation about it, I'd love to learn more about how {{business_name}} operates.
+
+When's a good time to chat?
+
+Gabe
+My Office Assistant
+
+P.S. You can also just text me back if that's easier: (707) 555-XXXX`
+            },
+            short: {
+                subject: "{{business_name}} - quick intro",
+                body: `Hi {{contact_name}},
+
+I'm Gabe from My Office Assistant - we help local {{industry}} businesses handle their calls so they don't miss customers.
+
+Wanted to see if that's something {{business_name}} has struggled with at all?
+
+Happy to chat whenever you're free. I'm local so I can meet up or call - whatever works.
+
+Gabe
+My Office Assistant
+
+Text or call: (707) 555-XXXX`
+            }
+        };
+
+        function openEmailModal(leadId) {
+            currentEmailLead = allLeads.find(l => l.id === leadId);
+            if (!currentEmailLead) return;
+
+            document.getElementById('emailLeadId').value = leadId;
+            document.getElementById('emailModalTitle').textContent = 'Email: ' + currentEmailLead.business_name;
+            document.getElementById('emailTemplate').value = '';
+            document.getElementById('emailSubject').value = '';
+            document.getElementById('emailBody').value = '';
+            document.getElementById('emailPreview').textContent = 'Select a template or start typing...';
+            document.getElementById('emailModal').classList.add('active');
+        }
+
+        function closeEmailModal() {
+            document.getElementById('emailModal').classList.remove('active');
+            currentEmailLead = null;
+        }
+
+        function applyEmailTemplate() {
+            if (!currentEmailLead) return;
+            
+            const templateKey = document.getElementById('emailTemplate').value;
+            if (!templateKey) return;
+
+            const template = emailTemplates[templateKey];
+            const contactName = currentEmailLead.contact_name || 'there';
+            
+            let subject = template.subject
+                .replace(/{{business_name}}/g, currentEmailLead.business_name)
+                .replace(/{{contact_name}}/g, contactName)
+                .replace(/{{industry}}/g, currentEmailLead.industry || 'service');
+
+            let body = template.body
+                .replace(/{{business_name}}/g, currentEmailLead.business_name)
+                .replace(/{{contact_name}}/g, contactName)
+                .replace(/{{industry}}/g, currentEmailLead.industry || 'service')
+                .replace(/{{phone}}/g, currentEmailLead.phone || '');
+
+            document.getElementById('emailSubject').value = subject;
+            document.getElementById('emailBody').value = body;
+            updateEmailPreview();
+        }
+
+        function insertPlaceholder(placeholder) {
+            const body = document.getElementById('emailBody');
+            const start = body.selectionStart;
+            const end = body.selectionEnd;
+            const text = body.value;
+            
+            body.value = text.substring(0, start) + placeholder + text.substring(end);
+            body.focus();
+            body.setSelectionRange(start + placeholder.length, start + placeholder.length);
+            updateEmailPreview();
+        }
+
+        function updateEmailPreview() {
+            if (!currentEmailLead) return;
+
+            const subject = document.getElementById('emailSubject').value;
+            const body = document.getElementById('emailBody').value;
+            const contactName = currentEmailLead.contact_name || 'there';
+
+            const preview = (subject + '\n\n' + body)
+                .replace(/{{business_name}}/g, currentEmailLead.business_name)
+                .replace(/{{contact_name}}/g, contactName)
+                .replace(/{{industry}}/g, currentEmailLead.industry || 'service')
+                .replace(/{{phone}}/g, currentEmailLead.phone || '');
+
+            document.getElementById('emailPreview').textContent = preview || 'Start typing to see preview...';
+        }
+
+        function copyEmail() {
+            const subject = document.getElementById('emailSubject').value;
+            const body = document.getElementById('emailBody').value;
+            const contactName = currentEmailLead.contact_name || 'there';
+
+            const finalText = (subject + '\n\n' + body)
+                .replace(/{{business_name}}/g, currentEmailLead.business_name)
+                .replace(/{{contact_name}}/g, contactName)
+                .replace(/{{industry}}/g, currentEmailLead.industry || 'service')
+                .replace(/{{phone}}/g, currentEmailLead.phone || '');
+
+            navigator.clipboard.writeText(finalText).then(() => {
+                alert('Email copied to clipboard!');
+                closeEmailModal();
+            }).catch(err => {
+                alert('Failed to copy. Please select and copy manually.');
+            });
+        }
+
+        // Update preview on input
+        document.getElementById('emailSubject').addEventListener('input', updateEmailPreview);
+        document.getElementById('emailBody').addEventListener('input', updateEmailPreview);
 
         // Load on start
         loadLeads();
