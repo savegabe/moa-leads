@@ -1079,16 +1079,20 @@ Napa, CA`
         };
 
         async function loadLeads() {
+            console.log('loadLeads started');
             try {
                 const res = await fetch('/api/leads');
+                console.log('fetch response:', res.status);
                 allLeads = await res.json();
+                console.log('leads loaded:', allLeads.length);
                 filterLeads();
                 loadStats();
                 // Hide loading screen
                 document.getElementById('loading').classList.add('hidden');
+                console.log('loading hidden');
             } catch (err) {
                 console.error('Failed to load leads:', err);
-                document.querySelector('.loading-text').textContent = 'Error loading leads. Please refresh.';
+                document.querySelector('.loading-text').textContent = 'Error: ' + err.message;
             }
         }
 
