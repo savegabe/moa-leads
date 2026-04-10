@@ -13,23 +13,9 @@
             padding: 15px;
             line-height: 1.6;
         }
-        h1 { 
-            font-size: 1.4em; 
-            margin-bottom: 5px;
-            color: #fff;
-            font-weight: 600;
-        }
-        .subtitle {
-            color: #666;
-            font-size: 0.9em;
-            margin-bottom: 20px;
-        }
-        .actions {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
+        h1 { font-size: 1.4em; margin-bottom: 5px; color: #fff; }
+        .subtitle { color: #666; font-size: 0.9em; margin-bottom: 20px; }
+        .actions { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
         .btn {
             background: #2563eb;
             color: white;
@@ -39,18 +25,9 @@
             cursor: pointer;
             font-size: 0.9rem;
         }
-        .btn-secondary {
-            background: #333;
-        }
-        .btn:hover {
-            opacity: 0.9;
-        }
-        .filters {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
+        .btn-secondary { background: #333; }
+        .btn:hover { opacity: 0.9; }
+        .filters { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
         .filters input, .filters select {
             background: #1a1a1f;
             border: 1px solid #333;
@@ -68,31 +45,12 @@
             overflow: hidden;
             font-size: 0.85em;
         }
-        th, td { 
-            padding: 12px; 
-            text-align: left; 
-            border-bottom: 1px solid #333; 
-        }
-        th { 
-            background: #1f1f25; 
-            color: #888;
-            font-weight: 500;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-        }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #333; }
+        th { background: #1f1f25; color: #888; font-size: 0.75rem; text-transform: uppercase; }
         tr:hover { background: #1f1f25; }
-        .business { 
-            font-weight: 600; 
-            color: #60a5fa; 
-        }
-        .business a {
-            color: #fff;
-            text-decoration: none;
-        }
-        .phone a {
-            color: #60a5fa;
-            text-decoration: none;
-        }
+        .business { font-weight: 600; }
+        .business a { color: #fff; text-decoration: none; }
+        .phone a { color: #60a5fa; text-decoration: none; }
         .status-cold { color: #9ca3af; }
         .status-contacted { color: #fbbf24; }
         .status-qualified { color: #34d399; }
@@ -102,24 +60,18 @@
         .loading { text-align: center; padding: 50px; color: #666; }
         .error { color: #f87171; text-align: center; padding: 20px; }
         .empty { text-align: center; padding: 40px; color: #666; }
-        
-        /* Modal styles */
         .modal-overlay {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             background: rgba(0,0,0,0.9);
             z-index: 100;
             justify-content: center;
             align-items: center;
             padding: 20px;
         }
-        .modal-overlay.active {
-            display: flex;
-        }
+        .modal-overlay.active { display: flex; }
         .modal {
             background: #1a1a1f;
             border: 1px solid #333;
@@ -129,28 +81,12 @@
             max-height: 90vh;
             overflow-y: auto;
         }
-        .modal-header {
-            padding: 20px;
-            border-bottom: 1px solid #333;
-        }
-        .modal-header h2 {
-            font-size: 1.2rem;
-        }
-        .modal-body {
-            padding: 20px;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-size: 0.85rem;
-            color: #888;
-        }
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
+        .modal-header { padding: 20px; border-bottom: 1px solid #333; }
+        .modal-header h2 { font-size: 1.2rem; }
+        .modal-body { padding: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-size: 0.85rem; color: #888; }
+        .form-group input, .form-group select, .form-group textarea {
             width: 100%;
             background: #0f0f12;
             border: 1px solid #333;
@@ -159,22 +95,9 @@
             border-radius: 6px;
             font-size: 0.95rem;
         }
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-        .modal-footer {
-            padding: 15px 20px;
-            border-top: 1px solid #333;
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-        }
-        .actions-cell {
-            display: flex;
-            gap: 8px;
-        }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .modal-footer { padding: 15px 20px; border-top: 1px solid #333; display: flex; justify-content: flex-end; gap: 10px; }
+        .actions-cell { display: flex; gap: 8px; }
         .actions-cell button {
             background: transparent;
             border: 1px solid #444;
@@ -184,11 +107,18 @@
             cursor: pointer;
             font-size: 0.75rem;
         }
-        .actions-cell button:hover {
-            border-color: #666;
-            color: #fff;
+        .actions-cell button:hover { border-color: #666; color: #fff; }
+        .btn-email { background: #2563eb !important; color: white !important; border-color: #2563eb !important; }
+        .placeholder-tag {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            margin: 2px;
         }
-        
         @media (max-width: 600px) {
             body { padding: 10px; }
             h1 { font-size: 1.2em; }
@@ -216,71 +146,42 @@
         </select>
     </div>
 
-    <div id="content">
-        <div class="loading">Loading leads...</div>
-    </div>
+    <div id="content"><div class="loading">Loading leads...</div></div>
 
-    <!-- Modal -->
+    <!-- Lead Modal -->
     <div class="modal-overlay" id="modal">
         <div class="modal">
-            <div class="modal-header">
-                <h2 id="modalTitle">Add Lead</h2>
-            </div>
+            <div class="modal-header"><h2 id="modalTitle">Add Lead</h2></div>
             <div class="modal-body">
                 <input type="hidden" id="leadId">
-                
-                <div class="form-group">
-                    <label>Business Name *</label>
-                    <input type="text" id="businessName" required>
-                </div>
-
+                <div class="form-group"><label>Business Name *</label><input type="text" id="businessName" required></div>
                 <div class="form-row">
-                    <div class="form-group">
-                        <label>Contact Name</label>
-                        <input type="text" id="contactName">
-                    </div>
-                    <div class="form-group">
-                        <label>Industry</label>
+                    <div class="form-group"><label>Contact Name</label><input type="text" id="contactName"></div>
+                    <div class="form-group"><label>Industry</label>
                         <select id="industry">
                             <option value="">Select...</option>
                             <option value="Plumbing">Plumbing</option>
                             <option value="HVAC">HVAC</option>
                             <option value="Locksmith">Locksmith</option>
                             <option value="Garage Door">Garage Door</option>
-                            <option value="Other">Other</option>
                         </select>
                     </div>
                 </div>
-
                 <div class="form-row">
-                    <div class="form-group">
-                        <label>Phone</label>
-                        <input type="tel" id="phone">
-                    </div>
-                    <div class="form-group">
-                        <label>Email</label>
-                        <input type="email" id="email">
-                    </div>
+                    <div class="form-group"><label>Phone</label><input type="tel" id="phone"></div>
+                    <div class="form-group"><label>Email</label><input type="email" id="email"></div>
                 </div>
-
-                <div class="form-group">
-                    <label>Website</label>
-                    <input type="url" id="website" placeholder="https://...">
-                </div>
-
+                <div class="form-group"><label>Website</label><input type="url" id="website" placeholder="https://..."></div>
                 <div class="form-row">
-                    <div class="form-group">
-                        <label>Status</label>
+                    <div class="form-group"><label>Status</label>
                         <select id="status">
                             <option value="cold">Cold</option>
                             <option value="contacted">Contacted</option>
                             <option value="qualified">Qualified</option>
                             <option value="closed-won">Closed Won</option>
-                            <option value="closed-lost">Closed Lost</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label>Priority</label>
+                    <div class="form-group"><label>Priority</label>
                         <select id="priority">
                             <option value="high">High</option>
                             <option value="medium" selected>Medium</option>
@@ -288,11 +189,7 @@
                         </select>
                     </div>
                 </div>
-
-                <div class="form-group">
-                    <label>Notes</label>
-                    <textarea id="notes" rows="3"></textarea>
-                </div>
+                <div class="form-group"><label>Notes</label><textarea id="notes" rows="3"></textarea></div>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
@@ -304,12 +201,9 @@
     <!-- Email Modal -->
     <div class="modal-overlay" id="emailModal">
         <div class="modal" style="max-width: 600px;">
-            <div class="modal-header">
-                <h2 id="emailModalTitle">Compose Email</h2>
-            </div>
+            <div class="modal-header"><h2 id="emailModalTitle">Compose Email</h2></div>
             <div class="modal-body">
                 <input type="hidden" id="emailLeadId">
-                
                 <div class="form-group">
                     <label>Template</label>
                     <select id="emailTemplate" onchange="applyEmailTemplate()">
@@ -319,19 +213,10 @@
                         <option value="short">Short & Sweet</option>
                     </select>
                 </div>
-
-                <div class="form-group">
-                    <label>Subject</label>
-                    <input type="text" id="emailSubject">
-                </div>
-
-                <div class="form-group">
-                    <label>Email Body</label>
-                    <textarea id="emailBody" rows="12"></textarea>
-                </div>
-
+                <div class="form-group"><label>Subject</label><input type="text" id="emailSubject"></div>
+                <div class="form-group"><label>Email Body</label><textarea id="emailBody" rows="12"></textarea></div>
                 <div style="background: #1a1a1f; padding: 12px; border-radius: 6px; margin-bottom: 15px;">
-                    <label style="font-size: 0.85rem; color: #888; margin-bottom: 8px; display: block;">Placeholders (auto-replaced):</label>
+                    <label style="font-size: 0.85rem; color: #888; margin-bottom: 8px; display: block;">Click to insert placeholders:</label>
                     <div>
                         <span class="placeholder-tag" onclick="insertPlaceholder('{{business_name}}')">{{business_name}}</span>
                         <span class="placeholder-tag" onclick="insertPlaceholder('{{contact_name}}')">{{contact_name}}</span>
@@ -339,10 +224,9 @@
                         <span class="placeholder-tag" onclick="insertPlaceholder('{{phone}}')">{{phone}}</span>
                     </div>
                 </div>
-
                 <div class="form-group">
                     <label>Preview (with placeholders replaced):</label>
-                    <div id="emailPreview" style="background: #0f0f12; padding: 15px; border-radius: 6px; white-space: pre-wrap; color: #888; max-height: 200px; overflow-y: auto;"></div>
+                    <div id="emailPreview" style="background: #0f0f12; padding: 15px; border-radius: 6px; white-space: pre-wrap; color: #888; max-height: 200px; overflow-y: auto;">Start typing to see preview...</div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -352,27 +236,24 @@
         </div>
     </div>
 
-    <style>
-        .placeholder-tag {
-            display: inline-block;
-            background: #2563eb;
-            color: white;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            cursor: pointer;
-            margin: 2px;
-        }
-        .placeholder-tag:hover {
-            background: #3b82f6;
-        }
-        .btn-email {
-            background: #2563eb;
-        }
-    </style>
-
     <script>
         let allLeads = [];
+        let currentEmailLead = null;
+
+        const emailTemplates = {
+            intro: {
+                subject: "Quick question about {{business_name}} - from a fellow local business owner",
+                body: "Hi {{contact_name}},\n\nI came across {{business_name}} while researching {{industry}} businesses in the area. My name is Gabe and I run My Office Assistant - we help local service businesses handle their phones so they never miss a customer.\n\nI know you're probably busy running {{business_name}}, so I'll keep this short. We set up AI receptionists that answer calls, book appointments, and send texts - basically handling the phone stuff that eats up your day.\n\nIs that something you've thought about, or are you pretty set with how you're handling calls right now?\n\nEither way, no pressure. Just wanted to introduce myself since we're both local.\n\nBest,\nGabe\nMy Office Assistant\n(Your local AI receptionist service)\n\nP.S. If you ever want to chat about it over coffee, I'm around. Just reply to this email or text me at the number below."
+            },
+            followup: {
+                subject: "Following up - {{business_name}}",
+                body: "Hey {{contact_name}},\n\nJust wanted to follow up on my email from last week. No rush at all - I know you're busy running {{business_name}}.\n\nTo recap: I'm Gabe from My Office Assistant. We help local {{industry}} businesses like {{business_name}} handle their phone calls automatically, so you can focus on the actual work instead of constantly answering the phone.\n\nQuick question: What's your biggest frustration with how you're currently handling calls? Just curious if it's even a pain point for you.\n\nIf it's not something you're looking for right now, totally get it. But if you're open to a 10-minute conversation about it, I'd love to learn more about how {{business_name}} operates.\n\nWhen's a good time to chat?\n\nGabe\nMy Office Assistant\n\nP.S. You can also just text me back if that's easier: (707) 555-XXXX"
+            },
+            short: {
+                subject: "{{business_name}} - quick intro",
+                body: "Hi {{contact_name}},\n\nI'm Gabe from My Office Assistant - we help local {{industry}} businesses handle their calls so they don't miss customers.\n\nWanted to see if that's something {{business_name}} has struggled with at all?\n\nHappy to chat whenever you're free. I'm local so I can meet up or call - whatever's easier.\n\nGabe\nMy Office Assistant\n\nText or call: (707) 555-XXXX"
+            }
+        };
 
         async function loadLeads() {
             try {
@@ -380,32 +261,22 @@
                 allLeads = await res.json();
                 renderLeads(allLeads);
             } catch (err) {
-                document.getElementById('content').innerHTML = 
-                    '<div class="error">Error: ' + err.message + '</div>';
+                document.getElementById('content').innerHTML = '<div class="error">Error: ' + err.message + '</div>';
             }
         }
 
         function renderLeads(leads) {
             const content = document.getElementById('content');
-            
             if (leads.length === 0) {
                 content.innerHTML = '<div class="empty">No leads yet. Click "Add Lead" to get started.</div>';
                 return;
             }
-
             const html = '<table><thead><tr>' +
-                '<th>Business</th>' +
-                '<th>Phone</th>' +
-                '<th>Industry</th>' +
-                '<th>Status</th>' +
-                '<th>Priority</th>' +
-                '<th>Actions</th>' +
+                '<th>Business</th><th>Phone</th><th>Industry</th><th>Status</th><th>Priority</th><th>Actions</th>' +
                 '</tr></thead><tbody>' +
                 leads.map(l => {
-                    const phoneLink = l.phone ? `<a href="tel:${l.phone}">${l.phone}</a>` : '-';
-                    const businessLink = l.website 
-                        ? `<a href="${l.website}" target="_blank">${l.business_name} ↗</a>` 
-                        : l.business_name;
+                    const phoneLink = l.phone ? '<a href="tel:' + l.phone + '">' + l.phone + '</a>' : '-';
+                    const businessLink = l.website ? '<a href="' + l.website + '" target="_blank">' + escapeHtml(l.business_name) + ' ↗</a>' : escapeHtml(l.business_name);
                     return '<tr>' +
                         '<td class="business">' + businessLink + '</td>' +
                         '<td class="phone">' + phoneLink + '</td>' +
@@ -414,20 +285,24 @@
                         '<td class="priority-' + l.priority + '" style="text-transform: capitalize;">' + l.priority + '</td>' +
                         '<td class="actions-cell">' +
                             '<button onclick="editLead(' + l.id + ')">Edit</button>' +
-                            '<button onclick="openEmailModal(' + l.id + ')">Email</button>' +
+                            '<button class="btn-email" onclick="openEmailModal(' + l.id + ')">Email</button>' +
                             '<button onclick="deleteLead(' + l.id + ')">Delete</button>' +
                         '</td>' +
                     '</tr>';
-                }).join('') +
-                '</tbody></table>';
-            
+                }).join('') + '</tbody></table>';
             content.innerHTML = html;
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
 
         function filterLeads() {
             const search = document.getElementById('searchInput').value.toLowerCase();
             const status = document.getElementById('statusFilter').value;
-            
             const filtered = allLeads.filter(l => {
                 const matchesSearch = !search || 
                     (l.business_name && l.business_name.toLowerCase().includes(search)) ||
@@ -435,7 +310,6 @@
                 const matchesStatus = !status || l.status === status;
                 return matchesSearch && matchesStatus;
             });
-            
             renderLeads(filtered);
         }
 
@@ -461,7 +335,6 @@
         async function editLead(id) {
             const lead = allLeads.find(l => l.id === id);
             if (!lead) return;
-
             document.getElementById('modalTitle').textContent = 'Edit Lead';
             document.getElementById('leadId').value = lead.id;
             document.getElementById('businessName').value = lead.business_name || '';
@@ -489,12 +362,7 @@
                 priority: document.getElementById('priority').value,
                 notes: document.getElementById('notes').value
             };
-
-            if (!data.business_name) {
-                alert('Business name required');
-                return;
-            }
-
+            if (!data.business_name) { alert('Business name required'); return; }
             try {
                 if (id) {
                     await fetch('/api/leads/' + id, {
@@ -511,9 +379,7 @@
                 }
                 closeModal();
                 loadLeads();
-            } catch (err) {
-                alert('Failed to save');
-            }
+            } catch (err) { alert('Failed to save'); }
         }
 
         async function deleteLead(id) {
@@ -521,83 +387,15 @@
             try {
                 await fetch('/api/leads/' + id, { method: 'DELETE' });
                 loadLeads();
-            } catch (err) {
-                alert('Failed to delete');
-            }
+            } catch (err) { alert('Failed to delete'); }
         }
 
-        // Close modal on outside click
-        document.getElementById('modal').addEventListener('click', function(e) {
-            if (e.target === this) closeModal();
-        });
-        document.getElementById('emailModal').addEventListener('click', function(e) {
-            if (e.target === this) closeEmailModal();
-        });
+        document.getElementById('modal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
 
-        // ==================== EMAIL DRAFT FEATURE ====================
-
-        let currentEmailLead = null;
-
-        const emailTemplates = {
-            intro: {
-                subject: "Quick question about {{business_name}} - from a fellow local business owner",
-                body: `Hi {{contact_name}},
-
-I came across {{business_name}} while researching {{industry}} businesses in the area. My name is Gabe and I run My Office Assistant - we help local service businesses handle their phones so they never miss a customer.
-
-I know you're probably busy running {{business_name}}, so I'll keep this short. We set up AI receptionists that answer calls, book appointments, and send texts - basically handling the phone stuff that eats up your day.
-
-Is that something you've thought about, or are you pretty set with how you're handling calls right now?
-
-Either way, no pressure. Just wanted to introduce myself since we're both local.
-
-Best,
-Gabe
-My Office Assistant
-(Your local AI receptionist service)
-
-P.S. If you ever want to chat about it over coffee, I'm around. Just reply to this email or text me at the number below.`
-            },
-            followup: {
-                subject: "Following up - {{business_name}}",
-                body: `Hey {{contact_name}},
-
-Just wanted to follow up on my email from last week. No rush at all - I know you're busy.
-
-To recap: I'm Gabe from My Office Assistant. We help local {{industry}} businesses like {{business_name}} handle their phone calls automatically, so you can focus on the actual work instead of constantly answering the phone.
-
-Quick question: What's your biggest frustration with how you're currently handling calls? Just curious if it's even a pain point for you.
-
-If it's not something you're looking for right now, totally get it. But if you're open to a 10-minute conversation about it, I'd love to learn more about how {{business_name}} operates.
-
-When's a good time to chat?
-
-Gabe
-My Office Assistant
-
-P.S. You can also just text me back if that's easier: (707) 555-XXXX`
-            },
-            short: {
-                subject: "{{business_name}} - quick intro",
-                body: `Hi {{contact_name}},
-
-I'm Gabe from My Office Assistant - we help local {{industry}} businesses handle their calls so they don't miss customers.
-
-Wanted to see if that's something {{business_name}} has struggled with at all?
-
-Happy to chat whenever you're free. I'm local so I can meet up or call - whatever works.
-
-Gabe
-My Office Assistant
-
-Text or call: (707) 555-XXXX`
-            }
-        };
-
+        // Email functions
         function openEmailModal(leadId) {
             currentEmailLead = allLeads.find(l => l.id === leadId);
             if (!currentEmailLead) return;
-
             document.getElementById('emailLeadId').value = leadId;
             document.getElementById('emailModalTitle').textContent = 'Email: ' + currentEmailLead.business_name;
             document.getElementById('emailTemplate').value = '';
@@ -614,24 +412,19 @@ Text or call: (707) 555-XXXX`
 
         function applyEmailTemplate() {
             if (!currentEmailLead) return;
-            
             const templateKey = document.getElementById('emailTemplate').value;
             if (!templateKey) return;
-
             const template = emailTemplates[templateKey];
             const contactName = currentEmailLead.contact_name || 'there';
-            
             let subject = template.subject
                 .replace(/{{business_name}}/g, currentEmailLead.business_name)
                 .replace(/{{contact_name}}/g, contactName)
                 .replace(/{{industry}}/g, currentEmailLead.industry || 'service');
-
             let body = template.body
                 .replace(/{{business_name}}/g, currentEmailLead.business_name)
                 .replace(/{{contact_name}}/g, contactName)
                 .replace(/{{industry}}/g, currentEmailLead.industry || 'service')
                 .replace(/{{phone}}/g, currentEmailLead.phone || '');
-
             document.getElementById('emailSubject').value = subject;
             document.getElementById('emailBody').value = body;
             updateEmailPreview();
@@ -642,7 +435,6 @@ Text or call: (707) 555-XXXX`
             const start = body.selectionStart;
             const end = body.selectionEnd;
             const text = body.value;
-            
             body.value = text.substring(0, start) + placeholder + text.substring(end);
             body.focus();
             body.setSelectionRange(start + placeholder.length, start + placeholder.length);
@@ -651,17 +443,14 @@ Text or call: (707) 555-XXXX`
 
         function updateEmailPreview() {
             if (!currentEmailLead) return;
-
             const subject = document.getElementById('emailSubject').value;
             const body = document.getElementById('emailBody').value;
             const contactName = currentEmailLead.contact_name || 'there';
-
             const preview = (subject + '\n\n' + body)
                 .replace(/{{business_name}}/g, currentEmailLead.business_name)
                 .replace(/{{contact_name}}/g, contactName)
                 .replace(/{{industry}}/g, currentEmailLead.industry || 'service')
                 .replace(/{{phone}}/g, currentEmailLead.phone || '');
-
             document.getElementById('emailPreview').textContent = preview || 'Start typing to see preview...';
         }
 
@@ -669,26 +458,21 @@ Text or call: (707) 555-XXXX`
             const subject = document.getElementById('emailSubject').value;
             const body = document.getElementById('emailBody').value;
             const contactName = currentEmailLead.contact_name || 'there';
-
             const finalText = (subject + '\n\n' + body)
                 .replace(/{{business_name}}/g, currentEmailLead.business_name)
                 .replace(/{{contact_name}}/g, contactName)
                 .replace(/{{industry}}/g, currentEmailLead.industry || 'service')
                 .replace(/{{phone}}/g, currentEmailLead.phone || '');
-
             navigator.clipboard.writeText(finalText).then(() => {
                 alert('Email copied to clipboard!');
                 closeEmailModal();
-            }).catch(err => {
-                alert('Failed to copy. Please select and copy manually.');
-            });
+            }).catch(() => alert('Failed to copy. Please select and copy manually.'));
         }
 
-        // Update preview on input
+        document.getElementById('emailModal').addEventListener('click', function(e) { if (e.target === this) closeEmailModal(); });
         document.getElementById('emailSubject').addEventListener('input', updateEmailPreview);
         document.getElementById('emailBody').addEventListener('input', updateEmailPreview);
 
-        // Load on start
         loadLeads();
     </script>
 </body>
