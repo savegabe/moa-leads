@@ -190,10 +190,29 @@
                     </div>
                 </div>
                 <div class="form-group"><label>Notes</label><textarea id="notes" rows="3"></textarea></div>
+                <div class="form-group"><label>Call Script</label><textarea id="callScript" rows="4" placeholder="Your cold call script for this lead..."></textarea></div>
+                <div class="form-group"><label>Reasons to Buy</label><textarea id="reasonsToBuy" rows="3" placeholder="Why they need your service..."></textarea></div>
+                <div class="form-group"><label>Proof/Reviews</label><textarea id="proofReviews" rows="3" placeholder="Testimonials, case studies, review links..."></textarea></div>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
                 <button class="btn" onclick="saveLead()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Lead Modal -->
+    <div class="modal-overlay" id="viewModal">
+        <div class="modal" style="max-width: 600px;">
+            <div class="modal-header">
+                <h2 id="viewModalTitle">Lead Details</h2>
+            </div>
+            <div class="modal-body" id="viewModalBody">
+                <!-- Content populated by JS -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeViewModal()">Close</button>
+                <button class="btn" onclick="editFromView()">Edit</button>
             </div>
         </div>
     </div>
@@ -284,6 +303,7 @@
                         '<td class="status-' + l.status + '" style="text-transform: capitalize;">' + l.status + '</td>' +
                         '<td class="priority-' + l.priority + '" style="text-transform: capitalize;">' + l.priority + '</td>' +
                         '<td class="actions-cell">' +
+                            '<button onclick="viewLead(' + l.id + ')">View</button>' +
                             '<button onclick="editLead(' + l.id + ')">Edit</button>' +
                             '<button class="btn-email" onclick="openEmailModal(' + l.id + ')">Email</button>' +
                             '<button onclick="deleteLead(' + l.id + ')">Delete</button>' +
@@ -325,6 +345,9 @@
             document.getElementById('status').value = 'cold';
             document.getElementById('priority').value = 'medium';
             document.getElementById('notes').value = '';
+            document.getElementById('callScript').value = '';
+            document.getElementById('reasonsToBuy').value = '';
+            document.getElementById('proofReviews').value = '';
             document.getElementById('modal').classList.add('active');
         }
 
@@ -346,6 +369,9 @@
             document.getElementById('status').value = lead.status || 'cold';
             document.getElementById('priority').value = lead.priority || 'medium';
             document.getElementById('notes').value = lead.notes || '';
+            document.getElementById('callScript').value = lead.call_script || '';
+            document.getElementById('reasonsToBuy').value = lead.reasons_to_buy || '';
+            document.getElementById('proofReviews').value = lead.proof_reviews || '';
             document.getElementById('modal').classList.add('active');
         }
 
@@ -360,7 +386,10 @@
                 website: document.getElementById('website').value,
                 status: document.getElementById('status').value,
                 priority: document.getElementById('priority').value,
-                notes: document.getElementById('notes').value
+                notes: document.getElementById('notes').value,
+                call_script: document.getElementById('callScript').value,
+                reasons_to_buy: document.getElementById('reasonsToBuy').value,
+                proof_reviews: document.getElementById('proofReviews').value
             };
             if (!data.business_name) { alert('Business name required'); return; }
             try {
@@ -391,6 +420,65 @@
         }
 
         document.getElementById('modal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
+
+        let currentViewLeadId = null;
+
+        function viewLead(id) {
+            const lead = allLeads.find(l => l.id === id);
+            if (!lead) return;
+            currentViewLeadId = id;
+            document.getElementById('viewModalTitle').textContent = lead.business_name;
+            
+            const phoneLink = lead.phone ? '<a href="tel:' + lead.phone + '" style="color: #60a5fa;">' + lead.phone + '</a>' : '-';
+            const websiteLink = lead.website ? '<a href="' + lead.website + '" target="_blank" style="color: #60a5fa;">' + lead.website + ' ↗</a>' : '-';
+            
+            document.getElementById('viewModalBody').innerHTML = 
+                '<div style="margin-bottom: 20px;">' +
+                    '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">' +
+                        '<div><strong>Contact:</strong> ' + (lead.contact_name || '-') + '</div>' +
+                        '<div><strong>Industry:</strong> ' + (lead.industry || '-') + '</div>' +
+                        '<div><strong>Phone:</strong> ' + phoneLink + '</div>' +
+                        '<div><strong>Email:</strong> ' + (lead.email || '-') + '</div>' +
+                    '</div>' +
+                    '<div style="margin-bottom: 10px;"><strong>Website:</strong> ' + websiteLink + '</div>' +
+                    '<div style="display: flex; gap: 15px; margin-bottom: 15px;">' +
+                        '<span><strong>Status:</strong> <span class="status-' + lead.status + '">' + lead.status + '</span></span>' +
+                        '<span><strong>Priority:</strong> <span class="priority-' + lead.priority + '">' + lead.priority + '</span></span>' +
+                    '</div>' +
+                '</div>' +
+                '<div style="background: #1a1a1f; border: 1px solid #333; border-radius: 8px; padding: 15px; margin-bottom: 15px;">' +
+                    '<h3 style="color: #2563eb; margin-bottom: 10px; font-size: 0.9rem; text-transform: uppercase;">Call Script</h3>' +
+                    '<div style="white-space: pre-wrap; color: #e0e0e0;">' + (lead.call_script ? escapeHtml(lead.call_script) : '<em style="color: #666;">No call script added yet. Click Edit to add one.</em>') + '</div>' +
+                '</div>' +
+                '<div style="background: #1a1a1f; border: 1px solid #333; border-radius: 8px; padding: 15px; margin-bottom: 15px;">' +
+                    '<h3 style="color: #34d399; margin-bottom: 10px; font-size: 0.9rem; text-transform: uppercase;">Why They Need Us (Reasons to Buy)</h3>' +
+                    '<div style="white-space: pre-wrap; color: #e0e0e0;">' + (lead.reasons_to_buy ? escapeHtml(lead.reasons_to_buy) : '<em style="color: #666;">No reasons added yet. Click Edit to add.</em>') + '</div>' +
+                '</div>' +
+                '<div style="background: #1a1a1f; border: 1px solid #333; border-radius: 8px; padding: 15px;">' +
+                    '<h3 style="color: #fbbf24; margin-bottom: 10px; font-size: 0.9rem; text-transform: uppercase;">Proof & Reviews</h3>' +
+                    '<div style="white-space: pre-wrap; color: #e0e0e0;">' + (lead.proof_reviews ? escapeHtml(lead.proof_reviews) : '<em style="color: #666;">No proof/reviews added yet. Click Edit to add.</em>') + '</div>' +
+                '</div>' +
+                (lead.notes ? '<div style="background: #1a1a1f; border: 1px solid #333; border-radius: 8px; padding: 15px; margin-top: 15px;">' +
+                    '<h3 style="color: #888; margin-bottom: 10px; font-size: 0.9rem; text-transform: uppercase;">Notes</h3>' +
+                    '<div style="white-space: pre-wrap; color: #e0e0e0;">' + escapeHtml(lead.notes) + '</div>' +
+                '</div>' : '');
+            
+            document.getElementById('viewModal').classList.add('active');
+        }
+
+        function closeViewModal() {
+            document.getElementById('viewModal').classList.remove('active');
+            currentViewLeadId = null;
+        }
+
+        function editFromView() {
+            closeViewModal();
+            if (currentViewLeadId) {
+                editLead(currentViewLeadId);
+            }
+        }
+
+        document.getElementById('viewModal').addEventListener('click', function(e) { if (e.target === this) closeViewModal(); });
 
         // Email functions
         function openEmailModal(leadId) {

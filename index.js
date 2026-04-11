@@ -37,6 +37,9 @@ async function initDatabase() {
         priority TEXT DEFAULT 'medium',
         notes TEXT,
         email_tracking_enabled INTEGER DEFAULT 0,
+        call_script TEXT,
+        reasons_to_buy TEXT,
+        proof_reviews TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         last_contacted TIMESTAMP,
         next_follow_up DATE
@@ -90,14 +93,14 @@ app.get('/api/leads/:id', async (req, res) => {
 
 // Create lead
 app.post('/api/leads', async (req, res) => {
-  const { business_name, contact_name, phone, email, website, industry, status, priority, notes, next_follow_up } = req.body;
+  const { business_name, contact_name, phone, email, website, industry, status, priority, notes, next_follow_up, call_script, reasons_to_buy, proof_reviews } = req.body;
 
   try {
     const result = await pool.query(
-      `INSERT INTO leads (business_name, contact_name, phone, email, website, industry, status, priority, notes, next_follow_up)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      `INSERT INTO leads (business_name, contact_name, phone, email, website, industry, status, priority, notes, next_follow_up, call_script, reasons_to_buy, proof_reviews)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
        RETURNING *`,
-      [business_name, contact_name, phone, email, website, industry, status || 'cold', priority || 'medium', notes, next_follow_up]
+      [business_name, contact_name, phone, email, website, industry, status || 'cold', priority || 'medium', notes, next_follow_up, call_script, reasons_to_buy, proof_reviews]
     );
     res.status(201).json(result.rows[0]);
   } catch (err) {
