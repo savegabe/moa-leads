@@ -40,6 +40,8 @@ async function initDatabase() {
         call_script TEXT,
         reasons_to_buy TEXT,
         proof_reviews TEXT,
+        why_good_fit TEXT,
+        review_evidence TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         last_contacted TIMESTAMP,
         next_follow_up DATE
@@ -72,7 +74,9 @@ app.get('/api/migrate', async (req, res) => {
       ALTER TABLE leads 
       ADD COLUMN IF NOT EXISTS call_script TEXT,
       ADD COLUMN IF NOT EXISTS reasons_to_buy TEXT,
-      ADD COLUMN IF NOT EXISTS proof_reviews TEXT
+      ADD COLUMN IF NOT EXISTS proof_reviews TEXT,
+      ADD COLUMN IF NOT EXISTS why_good_fit TEXT,
+      ADD COLUMN IF NOT EXISTS review_evidence TEXT
     `);
     res.json({ message: 'Migration complete' });
   } catch (err) {
