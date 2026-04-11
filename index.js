@@ -65,6 +65,22 @@ async function initDatabase() {
   }
 }
 
+// Migration endpoint - add new columns
+app.get('/api/migrate', async (req, res) => {
+  try {
+    await pool.query(`
+      ALTER TABLE leads 
+      ADD COLUMN IF NOT EXISTS call_script TEXT,
+      ADD COLUMN IF NOT EXISTS reasons_to_buy TEXT,
+      ADD COLUMN IF NOT EXISTS proof_reviews TEXT
+    `);
+    res.json({ message: 'Migration complete' });
+  } catch (err) {
+    console.error('Migration error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Get all leads
 app.get('/api/leads', async (req, res) => {
   try {
