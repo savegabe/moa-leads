@@ -1,5 +1,5 @@
 const express = require('express');
-const Database = require('better-sqlite3');
+const { Pool } = require('pg');
 const path = require('path');
 
 const app = express();
@@ -14,195 +14,262 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Force redeploy timestamp: 2026-04-11-0439
-
-// Initialize database
-const dbPath = process.env.DATABASE_PATH || path.join(__dirname, 'leads.db');
-const db = new Database(dbPath);
+// Initialize PostgreSQL pool
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+});
 
 // Create tables if not exists
-db.exec(`
-  CREATE TABLE IF NOT EXISTS leads (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    business_name TEXT NOT NULL,
-    contact_name TEXT,
-    phone TEXT,
-    email TEXT,
-    website TEXT,
-    industry TEXT,
-    status TEXT DEFAULT 'cold',
-    priority TEXT DEFAULT 'medium',
-    notes TEXT,
-    email_tracking_enabled INTEGER DEFAULT 0,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    last_contacted DATETIME,
-    next_follow_up DATE
-  )
-`);
+async function initDatabase() {
+  const client = await pool.connect();
+  try {
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS leads (
+        id SERIAL PRIMARY KEY,
+        business_name TEXT NOT NULL,
+        contact_name TEXT,
+        phone TEXT,
+        email TEXT,
+        website TEXT,
+        industry TEXT,
+        status TEXT DEFAULT 'cold',
+        priority TEXT DEFAULT 'medium',
+        notes TEXT,
+        email_tracking_enabled INTEGER DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        last_contacted TIMESTAMP,
+        next_follow_up DATE
+      )
+    `);
 
-// Create emails table
-db.exec(`
-  CREATE TABLE IF NOT EXISTS emails (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    lead_id INTEGER NOT NULL,
-    subject TEXT,
-    body TEXT,
-    status TEXT DEFAULT 'draft',
-    sent_at DATETIME,
-    opened_at DATETIME,
-    replied_at DATETIME,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (lead_id) REFERENCES leads(id) ON DELETE CASCADE
-  )
-`);
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS emails (
+        id SERIAL PRIMARY KEY,
+        lead_id INTEGER NOT NULL REFERENCES leads(id) ON DELETE CASCADE,
+        subject TEXT,
+        body TEXT,
+        status TEXT DEFAULT 'draft',
+        sent_at TIMESTAMP,
+        opened_at TIMESTAMP,
+        replied_at TIMESTAMP,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+    console.log('Database initialized');
+  } finally {
+    client.release();
+  }
+}
 
 // Get all leads
-app.get('/api/leads', (req, res) => {
-  const stmt = db.prepare('SELECT * FROM leads ORDER BY created_at DESC');
-  const leads = stmt.all();
-  res.json(leads);
+app.get('/api/leads', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM leads ORDER BY created_at DESC');
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error fetching leads:', err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // Get single lead
-app.get('/api/leads/:id', (req, res) => {
-  const stmt = db.prepare('SELECT * FROM leads WHERE id = ?');
-  const lead = stmt.get(req.params.id);
-  if (lead) {
-    res.json(lead);
-  } else {
-    res.status(404).json({ error: 'Lead not found' });
+app.get('/api/leads/:id', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM leads WHERE id = $1', [req.params.id]);
+    if (result.rows.length > 0) {
+      res.json(result.rows[0]);
+    } else {
+      res.status(404).json({ error: 'Lead not found' });
+    }
+  } catch (err) {
+    console.error('Error fetching lead:', err);
+    res.status(500).json({ error: err.message });
   }
 });
 
 // Create lead
-app.post('/api/leads', (req, res) => {
+app.post('/api/leads', async (req, res) => {
   const { business_name, contact_name, phone, email, website, industry, status, priority, notes, next_follow_up } = req.body;
 
-  const stmt = db.prepare(`
-    INSERT INTO leads (business_name, contact_name, phone, email, website, industry, status, priority, notes, next_follow_up)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `);
-
-  const result = stmt.run(business_name, contact_name, phone, email, website, industry, status || 'cold', priority || 'medium', notes, next_follow_up);
-
-  res.status(201).json({ id: result.lastInsertRowid, ...req.body });
+  try {
+    const result = await pool.query(
+      `INSERT INTO leads (business_name, contact_name, phone, email, website, industry, status, priority, notes, next_follow_up)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+       RETURNING *`,
+      [business_name, contact_name, phone, email, website, industry, status || 'cold', priority || 'medium', notes, next_follow_up]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error('Error creating lead:', err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // Update lead
-app.patch('/api/leads/:id', (req, res) => {
+app.patch('/api/leads/:id', async (req, res) => {
   const { id } = req.params;
   const updates = req.body;
 
-  // Build dynamic query
-  const fields = Object.keys(updates).map(key => `${key} = ?`).join(', ');
-  const values = Object.values(updates);
-
-  const stmt = db.prepare(`UPDATE leads SET ${fields} WHERE id = ?`);
-  stmt.run(...values, id);
-
-  res.json({ id, ...updates });
+  try {
+    const fields = Object.keys(updates).map((key, index) => `${key} = $${index + 1}`).join(', ');
+    const values = Object.values(updates);
+    
+    const result = await pool.query(
+      `UPDATE leads SET ${fields} WHERE id = $${values.length + 1} RETURNING *`,
+      [...values, id]
+    );
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error('Error updating lead:', err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // Delete lead
-app.delete('/api/leads/:id', (req, res) => {
-  const stmt = db.prepare('DELETE FROM leads WHERE id = ?');
-  stmt.run(req.params.id);
-  res.status(204).send();
+app.delete('/api/leads/:id', async (req, res) => {
+  try {
+    await pool.query('DELETE FROM leads WHERE id = $1', [req.params.id]);
+    res.status(204).send();
+  } catch (err) {
+    console.error('Error deleting lead:', err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // Get stats
-app.get('/api/stats', (req, res) => {
-  const total = db.prepare('SELECT COUNT(*) as count FROM leads').get();
-  const byStatus = db.prepare(`
-    SELECT status, COUNT(*) as count
-    FROM leads
-    GROUP BY status
-  `).all();
+app.get('/api/stats', async (req, res) => {
+  try {
+    const total = await pool.query('SELECT COUNT(*) as count FROM leads');
+    const byStatus = await pool.query(`
+      SELECT status, COUNT(*) as count
+      FROM leads
+      GROUP BY status
+    `);
+    const byIndustry = await pool.query(`
+      SELECT industry, COUNT(*) as count
+      FROM leads
+      WHERE industry IS NOT NULL AND industry != ''
+      GROUP BY industry
+    `);
+    const followUpsToday = await pool.query(`
+      SELECT COUNT(*) as count
+      FROM leads
+      WHERE next_follow_up = CURRENT_DATE
+    `);
 
-  const byIndustry = db.prepare(`
-    SELECT industry, COUNT(*) as count
-    FROM leads
-    WHERE industry IS NOT NULL AND industry != ''
-    GROUP BY industry
-  `).all();
-
-  const followUpsToday = db.prepare(`
-    SELECT COUNT(*) as count
-    FROM leads
-    WHERE date(next_follow_up) = date('now')
-  `).get();
-
-  res.json({
-    total: total.count,
-    byStatus,
-    byIndustry,
-    followUpsToday: followUpsToday.count
-  });
+    res.json({
+      total: parseInt(total.rows[0].count),
+      byStatus: byStatus.rows,
+      byIndustry: byIndustry.rows,
+      followUpsToday: parseInt(followUpsToday.rows[0].count)
+    });
+  } catch (err) {
+    console.error('Error fetching stats:', err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // EMAIL ENDPOINTS
 
 // Get emails for a lead
-app.get('/api/leads/:id/emails', (req, res) => {
-  const stmt = db.prepare('SELECT * FROM emails WHERE lead_id = ? ORDER BY created_at DESC');
-  const emails = stmt.all(req.params.id);
-  res.json(emails);
+app.get('/api/leads/:id/emails', async (req, res) => {
+  try {
+    const result = await pool.query(
+      'SELECT * FROM emails WHERE lead_id = $1 ORDER BY created_at DESC',
+      [req.params.id]
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error fetching emails:', err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // Create email draft
-app.post('/api/leads/:id/emails', (req, res) => {
+app.post('/api/leads/:id/emails', async (req, res) => {
   const { subject, body, status } = req.body;
   const leadId = req.params.id;
 
-  const stmt = db.prepare(`
-    INSERT INTO emails (lead_id, subject, body, status)
-    VALUES (?, ?, ?, ?)
-  `);
-
-  const result = stmt.run(leadId, subject, body, status || 'draft');
-  res.status(201).json({ id: result.lastInsertRowid, lead_id: leadId, ...req.body });
+  try {
+    const result = await pool.query(
+      `INSERT INTO emails (lead_id, subject, body, status)
+       VALUES ($1, $2, $3, $4)
+       RETURNING *`,
+      [leadId, subject, body, status || 'draft']
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error('Error creating email:', err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
-// Update email (mark as sent, update content, etc.)
-app.patch('/api/emails/:id', (req, res) => {
+// Update email
+app.patch('/api/emails/:id', async (req, res) => {
   const { id } = req.params;
   const updates = req.body;
 
-  const fields = Object.keys(updates).map(key => `${key} = ?`).join(', ');
-  const values = Object.values(updates);
-
-  const stmt = db.prepare(`UPDATE emails SET ${fields} WHERE id = ?`);
-  stmt.run(...values, id);
-
-  res.json({ id, ...updates });
+  try {
+    const fields = Object.keys(updates).map((key, index) => `${key} = $${index + 1}`).join(', ');
+    const values = Object.values(updates);
+    
+    const result = await pool.query(
+      `UPDATE emails SET ${fields} WHERE id = $${values.length + 1} RETURNING *`,
+      [...values, id]
+    );
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error('Error updating email:', err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // Delete email
-app.delete('/api/emails/:id', (req, res) => {
-  const stmt = db.prepare('DELETE FROM emails WHERE id = ?');
-  stmt.run(req.params.id);
-  res.status(204).send();
+app.delete('/api/emails/:id', async (req, res) => {
+  try {
+    await pool.query('DELETE FROM emails WHERE id = $1', [req.params.id]);
+    res.status(204).send();
+  } catch (err) {
+    console.error('Error deleting email:', err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // Bulk create email drafts
-app.post('/api/emails/bulk', (req, res) => {
+app.post('/api/emails/bulk', async (req, res) => {
   const { leadIds, subject, body } = req.body;
 
-  const stmt = db.prepare(`
-    INSERT INTO emails (lead_id, subject, body, status)
-    VALUES (?, ?, ?, 'draft')
-  `);
-
-  const insertMany = db.transaction((ids) => {
-    for (const id of ids) {
-      stmt.run(id, subject, body);
+  try {
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+      for (const id of leadIds) {
+        await client.query(
+          `INSERT INTO emails (lead_id, subject, body, status) VALUES ($1, $2, $3, 'draft')`,
+          [id, subject, body]
+        );
+      }
+      await client.query('COMMIT');
+      res.json({ created: leadIds.length });
+    } catch (err) {
+      await client.query('ROLLBACK');
+      throw err;
+    } finally {
+      client.release();
     }
-  });
-
-  insertMany(leadIds);
-  res.json({ created: leadIds.length });
+  } catch (err) {
+    console.error('Error creating bulk emails:', err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Lead Dashboard running at http://0.0.0.0:${PORT}`);
+// Initialize database and start server
+initDatabase().then(() => {
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Lead Dashboard running at http://0.0.0.0:${PORT}`);
+  });
+}).catch(err => {
+  console.error('Failed to initialize database:', err);
+  process.exit(1);
 });
