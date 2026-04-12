@@ -78,7 +78,9 @@ app.get('/api/migrate', async (req, res) => {
       ADD COLUMN IF NOT EXISTS why_good_fit TEXT,
       ADD COLUMN IF NOT EXISTS review_evidence TEXT,
       ADD COLUMN IF NOT EXISTS category TEXT,
-      ADD COLUMN IF NOT EXISTS priority_rank INTEGER
+      ADD COLUMN IF NOT EXISTS priority_rank INTEGER,
+      ADD COLUMN IF NOT EXISTS industry_type TEXT,
+      ADD COLUMN IF NOT EXISTS industry_priority INTEGER
     `);
     res.json({ message: 'Migration complete' });
   } catch (err) {
