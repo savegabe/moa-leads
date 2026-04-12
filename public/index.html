@@ -36,6 +36,33 @@
             border-radius: 6px;
             font-size: 0.9rem;
         }
+        .industry-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            padding: 10px 0;
+            border-bottom: 1px solid #333;
+        }
+        .tab-btn {
+            background: #1a1a1f;
+            border: 1px solid #333;
+            color: #888;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+        .tab-btn:hover {
+            border-color: #555;
+            color: #e0e0e0;
+        }
+        .tab-btn.active {
+            background: #2563eb;
+            border-color: #2563eb;
+            color: white;
+        }
         table { 
             width: 100%; 
             border-collapse: collapse; 
@@ -144,6 +171,16 @@
             <option value="contacted">Contacted</option>
             <option value="qualified">Qualified</option>
         </select>
+    </div>
+
+    <div class="industry-tabs" id="industryTabs">
+        <button class="tab-btn active" data-industry="" onclick="setIndustryTab('')">All</button>
+        <button class="tab-btn" data-industry="Plumbing" onclick="setIndustryTab('Plumbing')">Plumbing</button>
+        <button class="tab-btn" data-industry="HVAC" onclick="setIndustryTab('HVAC')">HVAC</button>
+        <button class="tab-btn" data-industry="Plumbing/HVAC" onclick="setIndustryTab('Plumbing/HVAC')">Plumbing/HVAC</button>
+        <button class="tab-btn" data-industry="Locksmith" onclick="setIndustryTab('Locksmith')">Locksmith</button>
+        <button class="tab-btn" data-industry="Garage Door" onclick="setIndustryTab('Garage Door')">Garage Door</button>
+        <button class="tab-btn" data-industry="HVAC/Appliance" onclick="setIndustryTab('HVAC/Appliance')">HVAC/Appliance</button>
     </div>
 
     <div id="content"><div class="loading">Loading leads...</div></div>
@@ -325,14 +362,25 @@
         function filterLeads() {
             const search = document.getElementById('searchInput').value.toLowerCase();
             const status = document.getElementById('statusFilter').value;
+            const activeTab = document.querySelector('.tab-btn.active');
+            const industry = activeTab ? activeTab.dataset.industry : '';
+            
             const filtered = allLeads.filter(l => {
                 const matchesSearch = !search || 
                     (l.business_name && l.business_name.toLowerCase().includes(search)) ||
                     (l.industry && l.industry.toLowerCase().includes(search));
                 const matchesStatus = !status || l.status === status;
-                return matchesSearch && matchesStatus;
+                const matchesIndustry = !industry || l.industry_type === industry;
+                return matchesSearch && matchesStatus && matchesIndustry;
             });
             renderLeads(filtered);
+        }
+
+        function setIndustryTab(industry) {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.industry === industry);
+            });
+            filterLeads();
         }
 
         function openModal() {
