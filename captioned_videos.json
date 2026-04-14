@@ -1,0 +1,38 @@
+[
+  {
+    "filename": "generic_intro_captioned.mp4",
+    "display_name": "Generic Introduction (Captioned)",
+    "url": "/videos/generic_intro_captioned.mp4",
+    "duration_seconds": 18
+  },
+  {
+    "filename": "plumber_outreach_captioned.mp4",
+    "display_name": "Plumber Outreach (Captioned)",
+    "url": "/videos/plumber_outreach_captioned.mp4",
+    "duration_seconds": 18
+  },
+  {
+    "filename": "hvac_outreach_captioned.mp4",
+    "display_name": "HVAC Outreach (Captioned)",
+    "url": "/videos/hvac_outreach_captioned.mp4",
+    "duration_seconds": 17
+  },
+  {
+    "filename": "locksmith_outreach_captioned.mp4",
+    "display_name": "Locksmith Outreach (Captioned)",
+    "url": "/videos/locksmith_outreach_captioned.mp4",
+    "duration_seconds": 18
+  },
+  {
+    "filename": "garagedoor_outreach_captioned.mp4",
+    "display_name": "Garage Door Outreach (Captioned)",
+    "url": "/videos/garagedoor_outreach_captioned.mp4",
+    "duration_seconds": 18
+  },
+  {
+    "filename": "followup_captioned.mp4",
+    "display_name": "Follow-up Message (Captioned)",
+    "url": "/videos/followup_captioned.mp4",
+    "duration_seconds": 20
+  }
+]
