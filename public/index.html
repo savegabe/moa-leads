@@ -26,6 +26,7 @@
             font-size: 0.9rem;
         }
         .btn-secondary { background: #333; }
+        .btn-danger { background: #dc2626; }
         .btn:hover { opacity: 0.9; }
         .filters { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
         .filters input, .filters select {
@@ -35,6 +36,33 @@
             padding: 8px 12px;
             border-radius: 6px;
             font-size: 0.9rem;
+        }
+        .main-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            padding: 10px 0;
+            border-bottom: 1px solid #333;
+        }
+        .main-tabs .tab-btn {
+            background: #1a1a1f;
+            border: 1px solid #333;
+            color: #888;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        .main-tabs .tab-btn:hover {
+            border-color: #555;
+            color: #e0e0e0;
+        }
+        .main-tabs .tab-btn.active {
+            background: #2563eb;
+            border-color: #2563eb;
+            color: white;
         }
         .industry-tabs {
             display: flex;
@@ -87,6 +115,105 @@
         .loading { text-align: center; padding: 50px; color: #666; }
         .error { color: #f87171; text-align: center; padding: 20px; }
         .empty { text-align: center; padding: 40px; color: #666; }
+
+        /* Video Grid Styles */
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 10px 0;
+        }
+        .video-card {
+            background: #15151a;
+            border: 1px solid #333;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .video-card:hover {
+            transform: translateY(-2px);
+            border-color: #2563eb;
+        }
+        .video-thumbnail {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #0f0f12;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+        }
+        .video-thumbnail video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .video-thumbnail .play-icon {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: rgba(37, 99, 235, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            pointer-events: none;
+        }
+        .video-info {
+            padding: 15px;
+        }
+        .video-title {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 5px;
+            color: #fff;
+        }
+        .video-meta {
+            color: #666;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+        }
+        .video-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .video-actions button {
+            flex: 1;
+            padding: 8px;
+            font-size: 0.8rem;
+        }
+
+        /* Video Upload Section */
+        .upload-area {
+            border: 2px dashed #333;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: border-color 0.2s;
+        }
+        .upload-area:hover {
+            border-color: #2563eb;
+        }
+        .upload-area.dragover {
+            border-color: #2563eb;
+            background: rgba(37, 99, 235, 0.1);
+        }
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        /* Video Player Modal */
+        .video-modal video {
+            width: 100%;
+            max-height: 70vh;
+            border-radius: 8px;
+        }
+
         .modal-overlay {
             display: none;
             position: fixed;
@@ -107,6 +234,9 @@
             max-width: 500px;
             max-height: 90vh;
             overflow-y: auto;
+        }
+        .modal.wide {
+            max-width: 900px;
         }
         .modal-header { padding: 20px; border-bottom: 1px solid #333; }
         .modal-header h2 { font-size: 1.2rem; }
@@ -151,6 +281,7 @@
             h1 { font-size: 1.2em; }
             th, td { padding: 8px; font-size: 0.8em; }
             .form-row { grid-template-columns: 1fr; }
+            .video-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -173,17 +304,31 @@
         </select>
     </div>
 
-    <div class="industry-tabs" id="industryTabs">
-        <button class="tab-btn active" data-industry="" onclick="setIndustryTab('')">All</button>
-        <button class="tab-btn" data-industry="Plumbing" onclick="setIndustryTab('Plumbing')">Plumbing</button>
-        <button class="tab-btn" data-industry="HVAC" onclick="setIndustryTab('HVAC')">HVAC</button>
-        <button class="tab-btn" data-industry="Plumbing/HVAC" onclick="setIndustryTab('Plumbing/HVAC')">Plumbing/HVAC</button>
-        <button class="tab-btn" data-industry="Locksmith" onclick="setIndustryTab('Locksmith')">Locksmith</button>
-        <button class="tab-btn" data-industry="Garage Door" onclick="setIndustryTab('Garage Door')">Garage Door</button>
-        <button class="tab-btn" data-industry="HVAC/Appliance" onclick="setIndustryTab('HVAC/Appliance')">HVAC/Appliance</button>
+    <div class="main-tabs">
+        <button class="tab-btn active" data-tab="leads" onclick="setMainTab('leads')">Leads</button>
+        <button class="tab-btn" data-tab="videos" onclick="setMainTab('videos')">Videos</button>
     </div>
 
-    <div id="content"><div class="loading">Loading leads...</div></div>
+    <div id="leadsSection">
+        <div class="industry-tabs" id="industryTabs">
+            <button class="tab-btn active" data-industry="" onclick="setIndustryTab('')">All</button>
+            <button class="tab-btn" data-industry="Plumbing" onclick="setIndustryTab('Plumbing')">Plumbing</button>
+            <button class="tab-btn" data-industry="HVAC" onclick="setIndustryTab('HVAC')">HVAC</button>
+            <button class="tab-btn" data-industry="Plumbing/HVAC" onclick="setIndustryTab('Plumbing/HVAC')">Plumbing/HVAC</button>
+            <button class="tab-btn" data-industry="Locksmith" onclick="setIndustryTab('Locksmith')">Locksmith</button>
+            <button class="tab-btn" data-industry="Garage Door" onclick="setIndustryTab('Garage Door')">Garage Door</button>
+            <button class="tab-btn" data-industry="HVAC/Appliance" onclick="setIndustryTab('HVAC/Appliance')">HVAC/Appliance</button>
+        </div>
+        <div id="content"><div class="loading">Loading leads...</div></div>
+    </div>
+
+    <div id="videosSection" style="display: none;">
+        <div class="actions">
+            <button class="btn" onclick="openVideoModal()">+ Add Video</button>
+            <button class="btn btn-secondary" onclick="loadVideos()">Refresh</button>
+        </div>
+        <div id="videosContent"><div class="loading">Loading videos...</div></div>
+    </div>
 
     <!-- Lead Modal -->
     <div class="modal-overlay" id="modal">
@@ -294,9 +439,60 @@
         </div>
     </div>
 
+    <!-- Video Modal -->
+    <div class="modal-overlay" id="videoModal">
+        <div class="modal">
+            <div class="modal-header"><h2>Add Video</h2></div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Video URL *</label>
+                    <input type="url" id="videoUrl" placeholder="https://... or /videos/filename.mp4">
+                    <small style="color: #666;">Enter a URL to the video file</small>
+                </div>
+                <div class="form-group">
+                    <label>Display Name *</label>
+                    <input type="text" id="videoName" placeholder="e.g., Introduction to My Office Assistant">
+                </div>
+                <div class="form-group">
+                    <label>Duration (seconds)</label>
+                    <input type="number" id="videoDuration" placeholder="15">
+                </div>
+                <div class="form-group">
+                    <label>Thumbnail URL (optional)</label>
+                    <input type="url" id="videoThumbnail" placeholder="https://... or leave blank">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeVideoModal()">Cancel</button>
+                <button class="btn" onclick="saveVideo()">Add Video</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Video Player Modal -->
+    <div class="modal-overlay" id="videoPlayerModal">
+        <div class="modal wide video-modal">
+            <div class="modal-header">
+                <h2 id="playerModalTitle">Video</h2>
+            </div>
+            <div class="modal-body">
+                <video id="videoPlayer" controls autoplay>
+                    <source id="videoSource" src="" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeVideoPlayer()">Close</button>
+                <button class="btn btn-danger" onclick="deleteCurrentVideo()">Delete Video</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         let allLeads = [];
+        let allVideos = [];
         let currentEmailLead = null;
+        let currentVideoId = null;
 
         const emailTemplates = {
             intro: {
@@ -313,6 +509,171 @@
             }
         };
 
+        // Main Tab Switching
+        function setMainTab(tab) {
+            document.querySelectorAll('.main-tabs .tab-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.tab === tab);
+            });
+            
+            if (tab === 'leads') {
+                document.getElementById('leadsSection').style.display = 'block';
+                document.getElementById('videosSection').style.display = 'none';
+                loadLeads();
+            } else {
+                document.getElementById('leadsSection').style.display = 'none';
+                document.getElementById('videosSection').style.display = 'block';
+                loadVideos();
+            }
+        }
+
+        // Video Functions
+        async function loadVideos() {
+            const content = document.getElementById('videosContent');
+            content.innerHTML = '<div class="loading">Loading videos...</div>';
+            
+            try {
+                const res = await fetch('/api/videos');
+                allVideos = await res.json();
+                renderVideos(allVideos);
+            } catch (err) {
+                content.innerHTML = '<div class="error">Error loading videos: ' + err.message + '</div>';
+            }
+        }
+
+        function renderVideos(videos) {
+            const content = document.getElementById('videosContent');
+            
+            if (videos.length === 0) {
+                content.innerHTML = `
+                    <div class="empty">
+                        <p>No videos yet.</p>
+                        <p style="margin-top: 10px;">Click "+ Add Video" to add your first TTS video.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const html = '<div class="video-grid">' +
+                videos.map(v => `
+                    <div class="video-card">
+                        <div class="video-thumbnail" onclick="playVideo(${v.id})">
+                            ${v.thumbnail_url ? 
+                                `<img src="${escapeHtml(v.thumbnail_url)}" style="width:100%;height:100%;object-fit:cover;">` :
+                                `<div class="play-icon">▶</div>`
+                            }
+                        </div>
+                        <div class="video-info">
+                            <div class="video-title">${escapeHtml(v.display_name)}</div>
+                            <div class="video-meta">
+                                ${v.duration_seconds ? formatDuration(v.duration_seconds) : ''} • 
+                                ${new Date(v.created_at).toLocaleDateString()}
+                            </div>
+                            <div class="video-actions">
+                                <button class="btn" onclick="playVideo(${v.id})">Play</button>
+                                <button class="btn btn-danger" onclick="deleteVideo(${v.id})">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('') + '</div>';
+            
+            content.innerHTML = html;
+        }
+
+        function formatDuration(seconds) {
+            if (seconds < 60) return `${seconds}s`;
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function openVideoModal() {
+            document.getElementById('videoUrl').value = '';
+            document.getElementById('videoName').value = '';
+            document.getElementById('videoDuration').value = '';
+            document.getElementById('videoThumbnail').value = '';
+            document.getElementById('videoModal').classList.add('active');
+        }
+
+        function closeVideoModal() {
+            document.getElementById('videoModal').classList.remove('active');
+        }
+
+        async function saveVideo() {
+            const url = document.getElementById('videoUrl').value.trim();
+            const name = document.getElementById('videoName').value.trim();
+            const duration = document.getElementById('videoDuration').value;
+            const thumbnail = document.getElementById('videoThumbnail').value.trim();
+
+            if (!url || !name) {
+                alert('Please enter both a URL and display name');
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/videos', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        filename: url.split('/').pop() || 'video.mp4',
+                        display_name: name,
+                        url: url,
+                        thumbnail_url: thumbnail || null,
+                        duration_seconds: duration ? parseInt(duration) : null
+                    })
+                });
+                
+                if (res.ok) {
+                    closeVideoModal();
+                    loadVideos();
+                } else {
+                    const err = await res.json();
+                    alert('Error: ' + (err.error || 'Failed to save video'));
+                }
+            } catch (err) {
+                alert('Error: ' + err.message);
+            }
+        }
+
+        function playVideo(id) {
+            const video = allVideos.find(v => v.id === id);
+            if (!video) return;
+            
+            currentVideoId = id;
+            document.getElementById('playerModalTitle').textContent = video.display_name;
+            document.getElementById('videoSource').src = video.url;
+            document.getElementById('videoPlayer').load();
+            document.getElementById('videoPlayerModal').classList.add('active');
+        }
+
+        function closeVideoPlayer() {
+            document.getElementById('videoPlayer').pause();
+            document.getElementById('videoPlayerModal').classList.remove('active');
+            currentVideoId = null;
+        }
+
+        async function deleteVideo(id) {
+            if (!confirm('Delete this video?')) return;
+            
+            try {
+                const res = await fetch('/api/videos/' + id, { method: 'DELETE' });
+                if (res.ok) {
+                    loadVideos();
+                } else {
+                    alert('Failed to delete video');
+                }
+            } catch (err) {
+                alert('Error: ' + err.message);
+            }
+        }
+
+        async function deleteCurrentVideo() {
+            if (currentVideoId) {
+                await deleteVideo(currentVideoId);
+                closeVideoPlayer();
+            }
+        }
+
+        // Lead Functions
         async function loadLeads() {
             try {
                 const res = await fetch('/api/leads');
@@ -362,7 +723,7 @@
         function filterLeads() {
             const search = document.getElementById('searchInput').value.toLowerCase();
             const status = document.getElementById('statusFilter').value;
-            const activeTab = document.querySelector('.tab-btn.active');
+            const activeTab = document.querySelector('.industry-tabs .tab-btn.active');
             const industry = activeTab ? activeTab.dataset.industry : '';
             
             const filtered = allLeads.filter(l => {
@@ -377,7 +738,7 @@
         }
 
         function setIndustryTab(industry) {
-            document.querySelectorAll('.tab-btn').forEach(btn => {
+            document.querySelectorAll('.industry-tabs .tab-btn').forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.industry === industry);
             });
             filterLeads();
@@ -622,6 +983,8 @@
         }
 
         document.getElementById('emailModal').addEventListener('click', function(e) { if (e.target === this) closeEmailModal(); });
+        document.getElementById('videoModal').addEventListener('click', function(e) { if (e.target === this) closeVideoModal(); });
+        document.getElementById('videoPlayerModal').addEventListener('click', function(e) { if (e.target === this) closeVideoPlayer(); });
         document.getElementById('emailSubject').addEventListener('input', updateEmailPreview);
         document.getElementById('emailBody').addEventListener('input', updateEmailPreview);
 
