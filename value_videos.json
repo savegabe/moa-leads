@@ -1,0 +1,38 @@
+[
+  {
+    "filename": "plumber_value.mp4",
+    "display_name": "Why Plumbers Need MOA",
+    "url": "/videos/plumber_value.mp4",
+    "duration_seconds": 20
+  },
+  {
+    "filename": "hvac_value.mp4",
+    "display_name": "Why HVAC Needs MOA",
+    "url": "/videos/hvac_value.mp4",
+    "duration_seconds": 20
+  },
+  {
+    "filename": "locksmith_value.mp4",
+    "display_name": "Why Locksmiths Need MOA",
+    "url": "/videos/locksmith_value.mp4",
+    "duration_seconds": 20
+  },
+  {
+    "filename": "garagedoor_value.mp4",
+    "display_name": "Why Garage Door Needs MOA",
+    "url": "/videos/garagedoor_value.mp4",
+    "duration_seconds": 20
+  },
+  {
+    "filename": "generic_value.mp4",
+    "display_name": "Why Service Businesses Need MOA",
+    "url": "/videos/generic_value.mp4",
+    "duration_seconds": 20
+  },
+  {
+    "filename": "roi_explainer.mp4",
+    "display_name": "MOA ROI Calculator",
+    "url": "/videos/roi_explainer.mp4",
+    "duration_seconds": 18
+  }
+]
