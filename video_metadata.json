@@ -1,0 +1,32 @@
+[
+  {
+    "filename": "moa_generic_intro.mp4",
+    "display_name": "Generic Introduction",
+    "duration": 17
+  },
+  {
+    "filename": "moa_plumber_outreach.mp4",
+    "display_name": "Plumber Outreach",
+    "duration": 17
+  },
+  {
+    "filename": "moa_hvac_outreach.mp4",
+    "display_name": "HVAC Outreach",
+    "duration": 16
+  },
+  {
+    "filename": "moa_locksmith_outreach.mp4",
+    "display_name": "Locksmith Outreach",
+    "duration": 17
+  },
+  {
+    "filename": "moa_garagedoor_outreach.mp4",
+    "display_name": "Garage Door Outreach",
+    "duration": 17
+  },
+  {
+    "filename": "moa_followup.mp4",
+    "display_name": "Follow-up Message",
+    "duration": 18
+  }
+]
