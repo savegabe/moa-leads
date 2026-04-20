@@ -105,6 +105,9 @@
         tr:hover { background: #1f1f25; }
         .business { font-weight: 600; }
         .business a { color: #fff; text-decoration: none; }
+        .business a:hover { text-decoration: underline; }
+        .business a[href*="google.com"] { color: #888; }
+        .business a[href*="google.com"]:hover { color: #60a5fa; }
         .phone a { color: #60a5fa; text-decoration: none; }
         .status-cold { color: #9ca3af; }
         .status-contacted { color: #fbbf24; }
@@ -695,7 +698,19 @@
                 '</tr></thead><tbody>' +
                 leads.map(l => {
                     const phoneLink = l.phone ? '<a href="tel:' + l.phone + '">' + l.phone + '</a>' : '-';
-                    const businessLink = l.website ? '<a href="' + l.website + '" target="_blank">' + escapeHtml(l.business_name) + ' ↗</a>' : escapeHtml(l.business_name);
+                    // Website link or Google search fallback
+                    let businessLink;
+                    if (l.website) {
+                        // Force https:// prefix if missing
+                        let url = l.website;
+                        if (!url.startsWith('http')) {
+                            url = 'https://' + url;
+                        }
+                        businessLink = '<a href="' + url + '" target="_blank" title="Visit website">' + escapeHtml(l.business_name) + ' ↗</a>';
+                    } else {
+                        const searchQuery = encodeURIComponent(l.business_name + ' ' + (l.industry || ''));
+                        businessLink = '<a href="https://www.google.com/search?q=' + searchQuery + '" target="_blank" title="Search on Google" style="color: #888;">' + escapeHtml(l.business_name) + ' 🔍</a>';
+                    }
                     return '<tr>' +
                         '<td class="business">' + businessLink + '</td>' +
                         '<td class="phone">' + phoneLink + '</td>' +
@@ -847,7 +862,13 @@
             document.getElementById('viewModalTitle').textContent = lead.business_name;
             
             const phoneLink = lead.phone ? '<a href="tel:' + lead.phone + '" style="color: #60a5fa;">' + lead.phone + '</a>' : '-';
-            const websiteLink = lead.website ? '<a href="' + lead.website + '" target="_blank" style="color: #60a5fa;">' + lead.website + ' ↗</a>' : '-';
+            const websiteLink = lead.website ? 
+                (() => {
+                    let url = lead.website;
+                    if (!url.startsWith('http')) url = 'https://' + url;
+                    return '<a href="' + url + '" target="_blank" style="color: #60a5fa;">' + url + ' ↗</a>';
+                })() :
+                '<a href="https://www.google.com/search?q=' + encodeURIComponent(lead.business_name + ' ' + (lead.industry || '')) + '" target="_blank" style="color: #888;">Search Google 🔍</a>';
             
             document.getElementById('viewModalBody').innerHTML = 
                 '<div style="margin-bottom: 20px;">' +
